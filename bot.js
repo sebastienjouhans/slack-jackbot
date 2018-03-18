@@ -12,9 +12,8 @@ This is a sample Slack bot built with Botkit.
 require('dotenv').config();
 
 
-if (!process.env.slackClientId || !process.env.slackClientSecret || !process.env.PORT) {
+if (!process.env.slackBotUserOAuthAccessToken || !process.env.dialogflowDeveloperToken || !process.env.PORT) {
   console.log('Error: Specify clientId clientSecret and PORT in environment');
-  usage_tip();
   process.exit(1);
 }
 
