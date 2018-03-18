@@ -10,11 +10,18 @@
     }
   ],
   "env": {
-      "clientId": {
-          "description": "Client ID provided by Slack"
-      },
-      "clientSecret": {
-          "description": "Client Secret provided by Slack"
-      }
+    "slackClientId": {
+        "description": "Client ID provided by Slack"
+    },
+    "slackClientSecret": {
+        "description": "Client Secret provided by Slack"
+
+    },
+    "dialogflowClientToken": {
+        "description": "Dialogflow client access token"
+    },
+    "dialogflowDeveloperToken": {
+        "description": "Dialogflow developer access token"
+    }
   }
 }

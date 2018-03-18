@@ -13,7 +13,7 @@ var env = require('node-env-file');
 env(__dirname + '/.env');
 
 
-if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
+if (!process.env.slackClientId || !process.env.slackClientSecret || !process.env.PORT) {
   console.log('Error: Specify clientId clientSecret and PORT in environment');
   usage_tip();
   process.exit(1);
@@ -23,10 +23,9 @@ var Botkit = require('botkit');
 var debug = require('debug')('botkit:main');
 
 var bot_options = {
-    clientId: process.env.clientId,
-    clientSecret: process.env.clientSecret,
-    // debug: true,
-    scopes: ['bot']
+    //clientId: process.env.slackClientId,
+    //clientSecret: process.env.slackClientSecret,
+    debug: true
 };
 
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
@@ -34,7 +33,16 @@ bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a 
 // Create the Botkit controller, which controls all instances of the bot.
 var controller = Botkit.slackbot(bot_options);
 
-controller.startTicking();
+var slackBot = controller.spawn({
+  token:process.env.slackBotUserOAuthAccessToken
+});
+
+var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
+  token: process.env.dialogflowDeveloperToken,
+});
+
+controller.middleware.receive.use(dialogflowMiddleware.receive);
+slackBot.startRTM();
 
 // Set up an Express-powered webserver to expose oauth and webhook endpoints
 var webserver = require(__dirname + '/components/express_webserver.js')(controller);
@@ -48,6 +56,6 @@ require(__dirname + '/components/onboarding.js')(controller);
 
 var normalizedPath = require("path").join(__dirname, "skills");
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
-  require("./skills/" + file)(controller);
+  require("./skills/" + file)(controller, dialogflowMiddleware);
 });
 

@@ -1,7 +1,15 @@
-module.exports = function(controller) {
+module.exports = function(controller, dialogflowMiddleware) {
 
-    controller.hears(['^wifi$', '^what is the wifi$', '^what is the wifi password$', '^what are the wifi credentials$'], 'direct_message,direct_mention', function(bot, message) {
-        bot.reply(message, "the wifi credential for guest are\nSSID: oneConnectGuest\nPassword: 1618ac1618")
+    controller.hears(['wifi_intent'], 'direct_message', dialogflowMiddleware.hears, function(bot, message) {
+        console.log(message.confidence);
+        if(message.confidence >.5)
+        {
+            bot.reply(message, "the wifi credential for guest are\nSSID: oneConnectGuest\nPassword: 1618ac1618"); 
+        }
+        else
+        {
+            bot.reply(message, "I am sorry, I am not sure what you mean. I am still learning!"); 
+        }
     });
 
 };
