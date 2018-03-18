@@ -10,7 +10,7 @@ module.exports = function (controller) {
             if (err) {
                 console.log(err);
             } else {
-                convo.say('Hi, I am JackBot, I am here to help. Ask me a question like where is the creative brief template. If you get stuck just type help');
+                convo.say('Hi, I am JackBot, I am here to help. Ask me a question like where is the creative brief template. If you get stuck just type help.');
             }
         });
     });
