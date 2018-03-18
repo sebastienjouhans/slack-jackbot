@@ -23,10 +23,9 @@ var Botkit = require('botkit');
 var debug = require('debug')('botkit:main');
 
 var bot_options = {
-    clientId: process.env.slackClientId,
-    clientSecret: process.env.slackClientSecret,
-    debug: true,
-    scopes: ['bot']
+    //clientId: process.env.slackClientId,
+    //clientSecret: process.env.slackClientSecret,
+    debug: true
 };
 
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
@@ -35,12 +34,8 @@ bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a 
 var controller = Botkit.slackbot(bot_options);
 
 var slackBot = controller.spawn({
-  clientId: process.env.slackClientId,
-  clientSecret: process.env.slackClientSecret,
+  token:process.env.slackBotUserOAuthAccessToken
 });
-
-//controller.startTicking();
-
 
 var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
   token: process.env.dialogflowDeveloperToken,
