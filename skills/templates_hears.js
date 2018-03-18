@@ -9,10 +9,14 @@ respond immediately with a single line response.
 
 */
 
-module.exports = function(controller) {
+module.exports = function(controller, dialogflowMiddleware) {
 
-    controller.hears(['^templates$'], 'direct_message,direct_mention', function(bot, message) {
-        bot.reply(message, "Hi there, you're on workspace: " + message.team)
+    // controller.hears(['^templates$'], 'direct_message,direct_mention', function(bot, message) {
+    //     bot.reply(message, "Hi there, you're on workspace: " + message.team)
+    // });
+
+    controller.hears(['templates_intent'], 'direct_message', dialogflowMiddleware.hears, function(bot, message) {
+        bot.reply(message, 'Hello!');
     });
 
 };

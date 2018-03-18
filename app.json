@@ -12,15 +12,17 @@
     }
   ],
   "env": {
-      "clientId": {
+      "slackClientId": {
           "description": "Client ID provided by Slack"
       },
-      "clientSecret": {
+      "slackClientSecret": {
           "description": "Client Secret provided by Slack"
       },
-      "studio_token": {
-          "description": "Token associated with your bot in Botkit Studio",
-          "required":false
-      }
+      "dialogflowClientToken": {
+        "description": "Dialogflow client access token"
+    },
+    "dialogflowDeveloperToken": {
+        "description": "Dialogflow developer access token"
+    }
   }
 }
