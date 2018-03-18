@@ -9,8 +9,7 @@
 This is a sample Slack bot built with Botkit.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-var env = require('node-env-file');
-env(__dirname + '/.env');
+require('dotenv').config();
 
 
 if (!process.env.slackClientId || !process.env.slackClientSecret || !process.env.PORT) {
