@@ -1,18 +1,11 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-           ______     ______     ______   __  __     __     ______
-          /\  == \   /\  __ \   /\__  _\ /\ \/ /    /\ \   /\__  _\
-          \ \  __<   \ \ \/\ \  \/_/\ \/ \ \  _"-.  \ \ \  \/_/\ \/
-           \ \_____\  \ \_____\    \ \_\  \ \_\ \_\  \ \_\    \ \_\
-            \/_____/   \/_____/     \/_/   \/_/\/_/   \/_/     \/_/
-
-
-This is a sample Slack bot built with Botkit.
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 require('dotenv').config();
 
 
-if (!process.env.slackBotUserOAuthAccessToken || !process.env.dialogflowDeveloperToken || !process.env.PORT) {
+if (!process.env.slackClientId || 
+    !process.env.slackClientSecret || 
+    !process.env.slackBotUserOAuthAccessToken || 
+    !process.env.dialogflowDeveloperToken || 
+    !process.env.port) {
   console.log('Error: Specify clientId clientSecret and PORT in environment');
   process.exit(1);
 }
@@ -21,9 +14,9 @@ var Botkit = require('botkit');
 var debug = require('debug')('botkit:main');
 
 var bot_options = {
-    //clientId: process.env.slackClientId,
-    //clientSecret: process.env.slackClientSecret,
-    debug: true
+  clientId: process.env.slackClientId,
+  clientSecret: process.env.slackClientSecret,
+  debug: true
 };
 
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
@@ -37,6 +30,19 @@ var slackBot = controller.spawn({
 
 var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
   token: process.env.dialogflowDeveloperToken,
+});
+
+// Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
+controller.setupWebserver(process.env.port, function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
 });
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
