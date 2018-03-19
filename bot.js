@@ -16,7 +16,8 @@ var debug = require('debug')('botkit:main');
 var bot_options = {
   clientId: process.env.slackClientId,
   clientSecret: process.env.slackClientSecret,
-  debug: true
+  debug: true,
+  scopes: ['bot','incoming-webhook','team:read','users:read','users.profile:read','channels:read','im:read','im:write','groups:read','emoji:read','chat:write:bot'],
 };
 
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
