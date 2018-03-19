@@ -6,7 +6,7 @@ if (!process.env.slackClientId ||
     !process.env.slackBotUserOAuthAccessToken || 
     !process.env.dialogflowDeveloperToken || 
     !process.env.port) {
-  console.log('Error: Specify clientId clientSecret and PORT in environment');
+  console.log('Error: Specify variable in environment');
   process.exit(1);
 }
 
@@ -17,7 +17,17 @@ var bot_options = {
   clientId: process.env.slackClientId,
   clientSecret: process.env.slackClientSecret,
   debug: true,
-  scopes: ['bot','incoming-webhook','team:read','users:read','users.profile:read','channels:read','im:read','im:write','groups:read','emoji:read','chat:write:bot'],
+  scopes: ['bot',
+            'incoming-webhook',
+            'team:read',
+            'users:read',
+            'users.profile:read',
+            'channels:read',
+            'im:read',
+            'im:write',
+            'groups:read',
+            'emoji:read',
+            'chat:write:bot'],
 };
 
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
@@ -36,12 +46,13 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
 controller.setupWebserver(process.env.port, function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
-
   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
     if (err) {
       res.status(500).send('ERROR: ' + err);
+      console.log('ERROR: ' + err);
     } else {
       res.send('Success!');
+      console.log('Success!');
     }
   });
 });
