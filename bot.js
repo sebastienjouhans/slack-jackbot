@@ -17,7 +17,7 @@ var bot_options = {
   clientId: process.env.slackClientId,
   clientSecret: process.env.slackClientSecret,
   debug: true,
-  rtm_receive_messages: false,
+  //rtm_receive_messages: false,
   scopes: ['bot',
             'incoming-webhook',
             'team:read',
@@ -56,6 +56,7 @@ controller.setupWebserver(process.env.port, function(err,webserver) {
       console.log('Success!');
     }
   });
+  controller.startTicking();
 });
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
