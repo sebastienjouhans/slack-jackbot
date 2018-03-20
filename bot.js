@@ -17,7 +17,7 @@ var bot_options = {
   clientId: process.env.slackClientId,
   clientSecret: process.env.slackClientSecret,
   debug: true,
-  rtm_receive_messages: false,
+  //rtm_receive_messages: false,
   scopes: ['bot',
             'incoming-webhook',
             'team:read',
@@ -45,19 +45,20 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
 });
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
-controller.setupWebserver(process.env.port, function(err,webserver) {
-  controller.createWebhookEndpoints(controller.webserver);
-  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-    if (err) {
-      res.status(500).send('ERROR: ' + err);
-      console.log('-----------------------ERROR: ' + err);
-    } else {
-      res.send('Success!');
-      console.log('-----------------------Success!');
-    }
-  });
-  controller.startTicking();
-});
+// controller.setupWebserver(process.env.port, function(err,webserver) {
+//   controller.createWebhookEndpoints(controller.webserver);
+//   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+//     if (err) {
+//       res.status(500).send('ERROR: ' + err);
+//       console.log('-----------------------ERROR: ' + err);
+//     } else {
+//       res.send('Success!');
+//       console.log('-----------------------Success!');
+//     }
+//   });
+//   controller.startTicking();
+// });
+
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 slackBot.startRTM();
