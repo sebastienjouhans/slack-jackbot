@@ -9,13 +9,31 @@ module.exports = function(controller, dialogflowMiddleware) {
                     fallback: "fallback text",
                     callback_id: '123',
                     attachment_type: 'default',
-                    title: 'message title',
                     actions: [
                         {
-                          "name": "say",
-                          "text": "button text",
+                          "name": "creative",
+                          "text": "creative brief",
                           "type": "button",
-                          "value": "whatever you want to pass into the interactive_message_callback"}
+                          "value": "whatever you want to pass into the interactive_message_callback"
+                        },
+                        {
+                            "name": "ditch",
+                            "text": "ditch deck",
+                            "type": "button",
+                            "value": "whatever you want to pass into the interactive_message_callback"
+                          },
+                          {
+                            "name": "presentation",
+                            "text": "presentation deck",
+                            "type": "button",
+                            "value": "whatever you want to pass into the interactive_message_callback"
+                          },
+                          {
+                            "name": "creds",
+                            "text": "creds deck",
+                            "type": "button",
+                            "value": "whatever you want to pass into the interactive_message_callback"
+                          },
                     ]
                 }
             ],
