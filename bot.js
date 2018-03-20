@@ -17,7 +17,7 @@ var bot_options = {
   clientId: process.env.slackClientId,
   clientSecret: process.env.slackClientSecret,
   debug: true,
-  rtm_receive_messages: false,
+  //rtm_receive_messages: false,
   scopes: ['bot',
             'incoming-webhook',
             'team:read',
