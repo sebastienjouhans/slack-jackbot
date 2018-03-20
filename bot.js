@@ -44,11 +44,11 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
 });
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
-controller.setupWebserver(process.env.port, function(err,webserver) {
-  controller.createWebhookEndpoints(controller.webserver);
-  controller.createOauthEndpoints(controller.webserver,function(err,req,res){});
-  //controller.startTicking();
-});
+// controller.setupWebserver(process.env.port, function(err,webserver) {
+//   controller.createWebhookEndpoints(controller.webserver);
+//   controller.createOauthEndpoints(controller.webserver,function(err,req,res){});
+//   //controller.startTicking();
+// });
 
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
