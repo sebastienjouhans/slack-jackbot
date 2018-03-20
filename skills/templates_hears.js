@@ -10,8 +10,6 @@ module.exports = function(controller, dialogflowMiddleware) {
                     fallback: "fallback text",
                     callback_id: '123',
                     attachment_type: 'default',
-
-                    title: 'message title',
                     actions: [
                         {
                           "name": "creative",
