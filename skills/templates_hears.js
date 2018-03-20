@@ -1,55 +1,61 @@
 module.exports = function(controller, dialogflowMiddleware) {
 
     controller.hears(['test button'], 'direct_message,direct_mention,mention', function (bot, message) {
-        var testButtonReply = {
-                    username: 'Button Bot' ,
-                    text: 'This is a test message with a button',
-                    replace_original: 'true',
-                    attachments: [
-                        {
-                            fallback: "fallback text",
-                            callback_id: '123',
-                            attachment_type: 'default',
-                            title: 'message title',
-                            text: 'message content',
-                            color: '#0075C7',
-                            actions: [
-                                {
-                                  "name": "button name",
-                                  "text": "button text",
-                                  "type": "button",
-                                  "value": "whatever you want to pass into the interactive_message_callback"}
-                            ]
-                        }
-                    ],
-                    icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'
-                    
-                }
-        bot.reply(message, testButtonReply);            
+           
     });
 
 
 
-    controller.on('interactive_message_callback', function(bot, message) {
-        // These 3 lines are used to parse out the id's
-        var ids = message.callback_id.split(/\-/);
-        var user_id = ids[0];
-        var item_id = ids[1];
+    // controller.on('interactive_message_callback', function(bot, message) {
+    //     // These 3 lines are used to parse out the id's
+    //     var ids = message.callback_id.split(/\-/);
+    //     var user_id = ids[0];
+    //     var item_id = ids[1];
     
-        var callbackId = message.callback_id;
+    //     var callbackId = message.callback_id;
         
-        // Example use of Select case method for evaluating the callback ID
-        // Callback ID 123 for weather bot webcam
-        switch(callbackId) {
-        case "123":
-            bot.replyInteractive(message, "Button works!");
-            break;
-        // Add more cases here to handle for multiple buttons    
-        default:
-            // For debugging
-            bot.reply(message, 'The callback ID has not been defined');
+    //     // Example use of Select case method for evaluating the callback ID
+    //     // Callback ID 123 for weather bot webcam
+    //     switch(callbackId) {
+    //     case "123":
+    //         bot.replyInteractive(message, "Button works!");
+    //         break;
+    //     // Add more cases here to handle for multiple buttons    
+    //     default:
+    //         // For debugging
+    //         bot.reply(message, 'The callback ID has not been defined');
+    //     }
+    // });
+
+
+    controller.middleware.receive.use(function(bot, message, next) {
+        if (message.type == 'interactive_message_callback') {
+          if (message.actions[0].name.match(/^say$/)) {
+              var reply = message.original_message;
+  
+              for (var a = 0; a < reply.attachments.length; a++) {
+                  reply.attachments[a].actions = null;
+              }
+  
+              var person = '<@' + message.user + '>';
+              if (message.channel[0] == 'D') {
+                  person = 'You';
+              }
+  
+              reply.attachments.push(
+                  {
+                      text: person + ' said, ' + message.actions[0].value,
+                  }
+              );
+  
+              bot.replyInteractive(message, reply);
+    
+           }
         }
-    });
+        
+        next();    
+        
+      });
 
 
     controller.hears(['templates_intent'], 'direct_message', dialogflowMiddleware.hears, function(bot, message) {
@@ -69,6 +75,29 @@ module.exports = function(controller, dialogflowMiddleware) {
                 case 'creds': 
                     bot.reply(message, "path to creds template");
                     break;
+                default:
+                var testButtonReply = {
+                    text: 'Which templates do you want to know about',
+                    replace_original: 'true',
+                    attachments: [
+                        {
+                            fallback: "fallback text",
+                            callback_id: '123',
+                            attachment_type: 'default',
+                            title: 'message title',
+                            actions: [
+                                {
+                                  "name": "say",
+                                  "text": "button text",
+                                  "type": "button",
+                                  "value": "whatever you want to pass into the interactive_message_callback"}
+                            ]
+                        }
+                    ],
+                    icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'
+                    
+                }
+        bot.reply(message, testButtonReply); 
             }
         }
     });
