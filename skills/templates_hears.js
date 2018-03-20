@@ -2,6 +2,7 @@ module.exports = function(controller, dialogflowMiddleware) {
 
     controller.hears(['templates'], 'direct_message,direct_mention,mention', function (bot, message) {
         var testButtonReply = {
+            username: 'jackbot' ,
             text: 'Which templates do you want to know about',
             replace_original: 'true',
             attachments: [
