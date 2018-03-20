@@ -28,34 +28,38 @@ if (!process.env.port) {
 
 var Botkit = require('botkit');
 
-var slackController = Botkit.slackbot({
-    clientId: process.env.slackClientId,
-    clientSecret: process.env.slackClientSecret,
-    debug: true,
-    rtm_receive_messages: false,
-    redirectUri: 'https://slack-jackbot.herokuapp.com',
-    // scopes: ['bot',
-    // 'incoming-webhook',
-    // 'team:read',
-    // 'users:read',
-    // 'users.profile:read',
-    // 'channels:read',
-    // 'im:read',
-    // 'im:write',
-    // 'groups:read',
-    // 'emoji:read',
-    // 'chat:write:bot'],
-    scopes: ['bot',
-    'team:read',
-    'users:read',
-    'users.profile:read',
-    'channels:read',
-    'im:read',
-    'im:write',
-    'groups:read',
-    'emoji:read',
-    'chat:write:bot'],
-});
+var botkitOptions = {
+  clientId: process.env.slackClientId,
+  clientSecret: process.env.slackClientSecret,
+  debug: true,
+  rtm_receive_messages: false,
+  redirectUri: 'https://slack-jackbot.herokuapp.com',
+  // scopes: ['bot',
+  // 'incoming-webhook',
+  // 'team:read',
+  // 'users:read',
+  // 'users.profile:read',
+  // 'channels:read',
+  // 'im:read',
+  // 'im:write',
+  // 'groups:read',
+  // 'emoji:read',
+  // 'chat:write:bot'],
+  scopes: ['bot',
+  'team:read',
+  'users:read',
+  'users.profile:read',
+  'channels:read',
+  'im:read',
+  'im:write',
+  'groups:read',
+  'emoji:read',
+  'chat:write:bot'],
+};
+
+var slackController = Botkit.slackbot();
+
+slackController.configureSlackApp(botkitOptions);
 
 var slackBot = slackController.spawn({
     token: process.env.slackBotUserOAuthAccessToken,
@@ -65,8 +69,18 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
     token: process.env.dialogflowDeveloperToken,
 });
 
+slackController.setupWebserver(process.env.port,function(err,webserver) {
+
+  // set up web endpoints for oauth, receiving webhooks, etc.
+  slackController
+    .createHomepageEndpoint(slackController.webserver)
+    .createOauthEndpoints(slackController.webserver,function(err,req,res) {})
+    .createWebhookEndpoints(slackController.webserver);
+
+});
+
 slackController.middleware.receive.use(dialogflowMiddleware.receive);
-slackBot.startRTM();
+//slackBot.startRTM();
 
 var webserver = require(__dirname + '/components/express_webserver.js')(slackController);
 
