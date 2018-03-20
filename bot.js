@@ -59,7 +59,7 @@ var botkitOptions = {
 
 var slackController = Botkit.slackbot();
 
-slackController.configureSlackApp(botkitOptions);
+controller.configureSlackApp(botkitOptions);
 
 var slackBot = slackController.spawn({
     token: process.env.slackBotUserOAuthAccessToken,
@@ -69,18 +69,8 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
     token: process.env.dialogflowDeveloperToken,
 });
 
-slackController.setupWebserver(process.env.port,function(err,webserver) {
-
-  // set up web endpoints for oauth, receiving webhooks, etc.
-  slackController
-    .createHomepageEndpoint(slackController.webserver)
-    .createOauthEndpoints(slackController.webserver,function(err,req,res) {})
-    .createWebhookEndpoints(slackController.webserver);
-
-});
-
 slackController.middleware.receive.use(dialogflowMiddleware.receive);
-//slackBot.startRTM();
+slackBot.startRTM();
 
 var webserver = require(__dirname + '/components/express_webserver.js')(slackController);
 
