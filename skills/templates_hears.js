@@ -1,6 +1,6 @@
 module.exports = function(controller, dialogflowMiddleware) {
 
-    controller.hears(['I need a template', 'do you know where the templates are', 'show me where the template are'], 'direct_message,direct_mention,mention', function (bot, message) {
+    controller.hears(['templates'], 'direct_message,direct_mention,mention', function (bot, message) {
         var testButtonReply = {
             text: 'Which templates do you want to know about',
             replace_original: 'true',
@@ -68,7 +68,7 @@ module.exports = function(controller, dialogflowMiddleware) {
 
     controller.middleware.receive.use(function(bot, message, next) {
         if (message.type == 'interactive_message_callback') {
-          if (message.actions[0].name.match(/^say$/)) {
+          if (message.actions[0].name.match(/^creative$/)) {
               var reply = message.original_message;
   
               for (var a = 0; a < reply.attachments.length; a++) {

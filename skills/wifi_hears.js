@@ -1,6 +1,6 @@
 module.exports = function(controller, dialogflowMiddleware) {
 
-    controller.hears(['wifi_intent'], 'direct_message', dialogflowMiddleware.hears, function(bot, message) {
+    controller.hears(['wifi_intent'], 'direct_message,direct_mention,mention', dialogflowMiddleware.hears, function(bot, message) {
         console.log(message.confidence);
         if(message.confidence >.5)
         {
