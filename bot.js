@@ -32,7 +32,19 @@ var slackController = Botkit.slackbot({
     clientId: process.env.slackClientId,
     clientSecret: process.env.slackClientSecret,
     debug: true,
-
+    rtm_receive_messages: false,
+    redirectUri: 'https://slack-jackbot.herokuapp.com',
+    scopes: ['bot',
+    'incoming-webhook',
+    'team:read',
+    'users:read',
+    'users.profile:read',
+    'channels:read',
+    'im:read',
+    'im:write',
+    'groups:read',
+    'emoji:read',
+    'chat:write:bot'],
 });
 
 var slackBot = slackController.spawn({
