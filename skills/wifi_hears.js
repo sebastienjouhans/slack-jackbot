@@ -4,11 +4,7 @@ module.exports = function(controller, dialogflowMiddleware) {
         console.log(message.confidence);
         if(message.confidence >.5)
         {
-            bot.startConversation(message, function(err, convo) {
-                convo.say('the wifi credential for guest are')
-                convo.say('SSID: oneConnectGuest');
-                convo.say('Password: 1618ac1618');
-            }) 
+            bot.reply(message, "the wifi credential for guest are\nSSID: oneConnectGuest\nPassword: 1618ac1618"); 
         }
         else
         {
