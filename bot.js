@@ -50,10 +50,10 @@ controller.setupWebserver(process.env.port, function(err,webserver) {
   controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
     if (err) {
       res.status(500).send('ERROR: ' + err);
-      console.log('ERROR: ' + err);
+      console.log('-----------------------ERROR: ' + err);
     } else {
       res.send('Success!');
-      console.log('Success!');
+      console.log('-----------------------Success!');
     }
   });
   controller.startTicking();
