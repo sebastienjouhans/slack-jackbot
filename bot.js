@@ -59,7 +59,7 @@ var botkitOptions = {
 
 var slackController = Botkit.slackbot();
 
-controller.configureSlackApp(botkitOptions);
+slackController.configureSlackApp(botkitOptions);
 
 var slackBot = slackController.spawn({
     token: process.env.slackBotUserOAuthAccessToken,
