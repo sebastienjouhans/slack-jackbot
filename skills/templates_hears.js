@@ -1,7 +1,28 @@
 module.exports = function(controller, dialogflowMiddleware) {
 
     controller.hears(['test button'], 'direct_message,direct_mention,mention', function (bot, message) {
-           
+        var testButtonReply = {
+            text: 'Which templates do you want to know about',
+            replace_original: 'true',
+            attachments: [
+                {
+                    fallback: "fallback text",
+                    callback_id: '123',
+                    attachment_type: 'default',
+                    title: 'message title',
+                    actions: [
+                        {
+                          "name": "say",
+                          "text": "button text",
+                          "type": "button",
+                          "value": "whatever you want to pass into the interactive_message_callback"}
+                    ]
+                }
+            ],
+            icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'
+            
+        }
+bot.reply(message, testButtonReply); 
     });
 
 
@@ -75,29 +96,6 @@ module.exports = function(controller, dialogflowMiddleware) {
                 case 'creds': 
                     bot.reply(message, "path to creds template");
                     break;
-                default:
-                var testButtonReply = {
-                    text: 'Which templates do you want to know about',
-                    replace_original: 'true',
-                    attachments: [
-                        {
-                            fallback: "fallback text",
-                            callback_id: '123',
-                            attachment_type: 'default',
-                            title: 'message title',
-                            actions: [
-                                {
-                                  "name": "say",
-                                  "text": "button text",
-                                  "type": "button",
-                                  "value": "whatever you want to pass into the interactive_message_callback"}
-                            ]
-                        }
-                    ],
-                    icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'
-                    
-                }
-        bot.reply(message, testButtonReply); 
             }
         }
     });
