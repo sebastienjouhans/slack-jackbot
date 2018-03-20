@@ -4,6 +4,7 @@ require('dotenv').config();
 if (!process.env.slackClientId || 
     !process.env.slackClientSecret || 
     !process.env.slackBotUserOAuthAccessToken || 
+    !process.env.dialogflowDeveloperToken || 
     !process.env.port) {
   console.log('Error: Specify variable in environment');
   process.exit(1);
@@ -44,12 +45,19 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
 });
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
-// controller.setupWebserver(process.env.port, function(err,webserver) {
-//   controller.createWebhookEndpoints(controller.webserver);
-//   controller.createOauthEndpoints(controller.webserver,function(err,req,res){});
-//   //controller.startTicking();
-// });
-
+controller.setupWebserver(process.env.port, function(err,webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+      console.log('-----------------------ERROR: ' + err);
+    } else {
+      res.send('Success!');
+      console.log('-----------------------Success!');
+    }
+  });
+  controller.startTicking();
+});
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
 slackBot.startRTM();
