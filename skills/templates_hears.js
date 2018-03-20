@@ -1,6 +1,6 @@
 module.exports = function(controller, dialogflowMiddleware) {
 
-    controller.hears(['test button'], 'direct_message,direct_mention,mention', function (bot, message) {
+    controller.hears(['I need a template', 'do you know where the templates are', 'show me where the template are'], 'direct_message,direct_mention,mention', function (bot, message) {
         var testButtonReply = {
             text: 'Which templates do you want to know about',
             replace_original: 'true',
@@ -37,10 +37,9 @@ module.exports = function(controller, dialogflowMiddleware) {
                     ]
                 }
             ],
-            icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'
-            
+            icon_url: 'http://14379-presscdn-0-86.pagely.netdna-cdn.com/wp-content/uploads/2014/05/ButtonButton.jpg'  
         }
-bot.reply(message, testButtonReply); 
+        bot.reply(message, testButtonReply); 
     });
 
 
@@ -97,7 +96,7 @@ bot.reply(message, testButtonReply);
       });
 
 
-    controller.hears(['templates_intent'], 'direct_message', dialogflowMiddleware.hears, function(bot, message) {
+    controller.hears(['templates_intent'], 'direct_message,direct_mention,mention', dialogflowMiddleware.hears, function(bot, message) {
 
         if(message.entities){
             switch(message.entities.template_name_entity.toLocaleLowerCase())
