@@ -89,16 +89,16 @@ require("fs").readdirSync(normalizedPath).forEach(function(file) {
 
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
-// slackController.setupWebserver(process.env.port, function(err,webserver) {
-//     slackController.createWebhookEndpoints(slackController.webserver);
-//     slackController.createOauthEndpoints(slackController.webserver,function(err,req,res) {
-//         if (err) {
-//             res.status(500).send('ERROR: ' + err);
-//             console.log('-----------------------ERROR: ' + err);
-//         } else {
-//             res.send('Success!');
-//             console.log('-----------------------Success!');
-//         }
-//     });
-//     slackController.startTicking();
-// });
+slackController.setupWebserver(process.env.port, function(err,webserver) {
+    slackController.createWebhookEndpoints(slackController.webserver);
+    slackController.createOauthEndpoints(slackController.webserver,function(err,req,res) {
+        if (err) {
+            res.status(500).send('ERROR: ' + err);
+            console.log('-----------------------ERROR: ' + err);
+        } else {
+            res.send('Success!');
+            console.log('-----------------------Success!');
+        }
+    });
+    slackController.startTicking();
+});
