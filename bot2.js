@@ -28,7 +28,7 @@ if (!process.env.port) {
 
 var Botkit = require('botkit');
 
-var slackController = Botkit.slackbot({
+var controller = Botkit.slackbot({
     clientId: process.env.slackClientId,
     clientSecret: process.env.slackClientSecret,
     debug: true,
@@ -47,7 +47,7 @@ var slackController = Botkit.slackbot({
     rtm_receive_messages: false,
 });
 
-var slackBot = slackController.spawn({
+var slackBot = controller.spawn({
     token: process.env.slackBotUserOAuthAccessToken,
 });
 
@@ -55,29 +55,29 @@ var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
     token: process.env.dialogflowDeveloperToken,
 });
 
-slackController.middleware.receive.use(dialogflowMiddleware.receive);
+controller.middleware.receive.use(dialogflowMiddleware.receive);
 slackBot.startRTM();
 
-var webserver = require(__dirname + '/components/express_webserver.js')(slackController);
+var webserver = require(__dirname + '/components/express_webserver.js')(controller);
 
 // Set up a simple storage backend for keeping a record of customers
 // who sign up for the app via the oauth
-require(__dirname + '/components/user_registration.js')(slackController);
+require(__dirname + '/components/user_registration.js')(controller);
 
 // Send an onboarding message when a new team joins
-require(__dirname + '/components/onboarding.js')(slackController);
+require(__dirname + '/components/onboarding.js')(controller);
 
 var normalizedPath = require("path").join(__dirname, "skills");
 require("fs").readdirSync(normalizedPath).forEach(function(file) {
-  require("./skills/" + file)(slackController, dialogflowMiddleware);
+  require("./skills/" + file)(controller, dialogflowMiddleware);
 });
 
 
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
-slackController.setupWebserver(process.env.port, function(err,webserver) {
-    slackController.createWebhookEndpoints(slackController.webserver);
-    slackController.createOauthEndpoints(slackController.webserver,function(err,req,res) {
+controller.setupWebserver(process.env.port, function(err,webserver) {
+    controller.createWebhookEndpoints(controller.webserver);
+    controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
         if (err) {
             res.status(500).send('ERROR: ' + err);
             console.log('-----------------------ERROR: ' + err);
@@ -86,5 +86,5 @@ slackController.setupWebserver(process.env.port, function(err,webserver) {
             console.log('-----------------------Success!');
         }
     });
-    slackController.startTicking();
+    controller.startTicking();
 });
