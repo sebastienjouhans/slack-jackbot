@@ -28,11 +28,7 @@ if (!process.env.port) {
 
 var Botkit = require('botkit');
 
-var controller = Botkit.slackbot(botkitOptions);
 
-var slackBot = controller.spawn({
-    token: process.env.slackBotUserOAuthAccessToken,
-});
 
 // Sample controller config - REQUIRED FOR INTERACTIVE BUTTONS
 var controller = Botkit.slackbot({
@@ -58,6 +54,11 @@ var controller = Botkit.slackbot({
   }
 );
 
+
+var slackBot = controller.spawn({
+  token: process.env.slackBotUserOAuthAccessToken,
+});
+
 var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
     token: process.env.dialogflowDeveloperToken,
 });
@@ -66,7 +67,7 @@ controller.middleware.receive.use(dialogflowMiddleware.receive);
 
 
 
-slackBot.startRTM();
+//slackBot.startRTM();
 
 var webserver = require(__dirname + '/components/express_webserver.js')(controller);
 
@@ -96,5 +97,29 @@ controller.setupWebserver(process.env.port, function(err,webserver) {
       debug('-----------------------Success!');
     }
   });
-  controller.startTicking();
+  //controller.startTicking();
+});
+
+
+//REQUIRED FOR INTERACTIVE MESSAGES
+controller.storage.teams.all(function(err,teams) {
+
+  if (err) {
+    throw new Error(err);
+  }
+
+  // connect all teams with bots up to slack!
+  for (var t  in teams) {
+    if (teams[t].bot) {
+      controller.spawn(teams[t]).startRTM(function(err, bot) {
+        if (err) {
+          console.log('Error connecting bot to Slack:',err);
+        } else {
+            console.log(bot);
+          trackBot(bot);
+        }
+      });
+    }
+  }
+
 });
