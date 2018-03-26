@@ -28,35 +28,44 @@ if (!process.env.port) {
 
 var Botkit = require('botkit');
 
-var botkitOptions = {
-  clientId: process.env.slackClientId,
-  clientSecret: process.env.slackClientSecret,
-  debug: true,
-  redirectUri: 'https://slack-jackbot.herokuapp.com',
-  scopes: ['bot',
-  'incoming-webhook',
-  'team:read',
-  'users:read',
-  'users.profile:read',
-  'channels:read',
-  'im:read',
-  'im:write',
-  'groups:read',
-  'emoji:read',
-  'chat:write:bot'],
-};
-
 var controller = Botkit.slackbot(botkitOptions);
 
 var slackBot = controller.spawn({
     token: process.env.slackBotUserOAuthAccessToken,
 });
 
+// Sample controller config - REQUIRED FOR INTERACTIVE BUTTONS
+var controller = Botkit.slackbot({
+  debug: true,
+  interactive_replies: true, // tells botkit to send button clicks into conversations
+ // json_file_store: './db_slackbutton_bot/',
+}).configureSlackApp(
+  {
+    clientId: process.env.slackClientId,
+    clientSecret: process.env.slackClientSecret,
+    // Set scopes as needed. https://api.slack.com/docs/oauth-scopes
+    scopes: ['bot',
+      'incoming-webhook',
+      'team:read',
+      'users:read',
+      'users.profile:read',
+      'channels:read',
+      'im:read',
+      'im:write',
+      'groups:read',
+      'emoji:read',
+      'chat:write:bot'],
+  }
+);
+
 var dialogflowMiddleware = require('botkit-middleware-dialogflow')({
     token: process.env.dialogflowDeveloperToken,
 });
 
 controller.middleware.receive.use(dialogflowMiddleware.receive);
+
+
+
 slackBot.startRTM();
 
 var webserver = require(__dirname + '/components/express_webserver.js')(controller);
@@ -77,15 +86,15 @@ require("fs").readdirSync(normalizedPath).forEach(function(file) {
 
 // Setup for the Webserver - REQUIRED FOR INTERACTIVE BUTTONS
 controller.setupWebserver(process.env.port, function(err,webserver) {
-    controller.createWebhookEndpoints(controller.webserver);
-    controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-        if (err) {
-            res.status(500).send('ERROR: ' + err);
-            console.log('-----------------------ERROR: ' + err);
-        } else {
-            res.send('Success!');
-            console.log('-----------------------Success!');
-        }
-    });
-    controller.startTicking();
+  controller.createWebhookEndpoints(controller.webserver);
+  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+      debug('-----------------------ERROR: ' + err);
+    } else {
+      res.send('Success!');
+      debug('-----------------------Success!');
+    }
+  });
+  controller.startTicking();
 });

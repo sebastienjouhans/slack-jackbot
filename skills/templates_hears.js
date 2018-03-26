@@ -15,25 +15,25 @@ module.exports = function(controller, dialogflowMiddleware) {
                           "name": "creative",
                           "text": "creative brief",
                           "type": "button",
-                          "value": "whatever you want to pass into the interactive_message_callback"
+                          "value": "path to creative brief"
                         },
                         {
-                            "name": "ditch",
-                            "text": "ditch deck",
+                            "name": "pitch",
+                            "text": "pitch deck",
                             "type": "button",
-                            "value": "whatever you want to pass into the interactive_message_callback"
+                            "value": "path to pitch deck"
                           },
                           {
                             "name": "presentation",
                             "text": "presentation deck",
                             "type": "button",
-                            "value": "whatever you want to pass into the interactive_message_callback"
+                            "value": "path to presentation deck"
                           },
                           {
                             "name": "creds",
                             "text": "creds deck",
                             "type": "button",
-                            "value": "whatever you want to pass into the interactive_message_callback"
+                            "value": "path to creds deck"
                           },
                     ]
                 }
@@ -45,56 +45,68 @@ module.exports = function(controller, dialogflowMiddleware) {
 
 
 
-    // controller.on('interactive_message_callback', function(bot, message) {
-    //     // These 3 lines are used to parse out the id's
-    //     var ids = message.callback_id.split(/\-/);
-    //     var user_id = ids[0];
-    //     var item_id = ids[1];
+    controller.on('interactive_message_callback', function(bot, message) {
+        // These 3 lines are used to parse out the id's
+        var ids = message.callback_id.split(/\-/);
+        var user_id = ids[0];
+        var item_id = ids[1];
+        var name = message.actions[0].name;
+        var user = message.user;
+
+
     
-    //     var callbackId = message.callback_id;
+        var callbackId = message.callback_id;
+
+        debug(message);
+        debug(message.callback_id);
+        debug(user_id);
+        debug(item_id);
+        debug(name);
+        debug(user);
+        debug(callbackId);
         
-    //     // Example use of Select case method for evaluating the callback ID
-    //     // Callback ID 123 for weather bot webcam
-    //     switch(callbackId) {
-    //     case "123":
-    //         bot.replyInteractive(message, "Button works!");
-    //         break;
-    //     // Add more cases here to handle for multiple buttons    
-    //     default:
-    //         // For debugging
-    //         bot.reply(message, 'The callback ID has not been defined');
-    //     }
-    // });
-
-
-    controller.middleware.receive.use(function(bot, message, next) {
-        if (message.type == 'interactive_message_callback') {
-          if (message.actions[0].name.match(/^creative$/)) {
-              var reply = message.original_message;
-  
-              for (var a = 0; a < reply.attachments.length; a++) {
-                  reply.attachments[a].actions = null;
-              }
-  
-              var person = '<@' + message.user + '>';
-              if (message.channel[0] == 'D') {
-                  person = 'You';
-              }
-  
-              reply.attachments.push(
-                  {
-                      text: person + ' said, ' + message.actions[0].value,
-                  }
-              );
-  
-              bot.replyInteractive(message, reply);
-    
-           }
+        // Example use of Select case method for evaluating the callback ID
+        // Callback ID 123 for weather bot webcam
+        switch(callbackId) {
+        case "123":
+            bot.replyInteractive(message, "Button works!");
+            break;
+        // Add more cases here to handle for multiple buttons    
+        default:
+            // For debugging
+            bot.reply(message, 'The callback ID has not been defined');
         }
+    });
+
+
+    // controller.middleware.receive.use(function(bot, message, next) {
+    //     if (message.type == 'interactive_message_callback') {
+    //       if (message.actions[0].name.match(/^creative$/)) {
+    //           var reply = message.original_message;
+  
+    //           for (var a = 0; a < reply.attachments.length; a++) {
+    //               reply.attachments[a].actions = null;
+    //           }
+  
+    //           var person = '<@' + message.user + '>';
+    //           if (message.channel[0] == 'D') {
+    //               person = 'You';
+    //           }
+  
+    //           reply.attachments.push(
+    //               {
+    //                   text: person + ' said, ' + message.actions[0].value,
+    //               }
+    //           );
+  
+    //           bot.replyInteractive(message, reply);
+    
+    //        }
+    //     }
         
-        next();    
+    //     next();    
         
-      });
+    //   });
 
 
     controller.hears(['templates_intent'], 'direct_message,direct_mention,mention', dialogflowMiddleware.hears, function(bot, message) {
